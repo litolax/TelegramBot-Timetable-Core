@@ -18,7 +18,8 @@ namespace TelegramBot_Timetable_Core.Services
         {
             this._timer.Elapsed += this.ValidationSpammersTimeout;
         }
-
+        
+        
         private void ValidationSpammersTimeout(object? sender, ElapsedEventArgs e)
         {
             foreach (var (spammerId, timeoutTime) in this.Spammers)
