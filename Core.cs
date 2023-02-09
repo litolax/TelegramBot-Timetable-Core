@@ -3,7 +3,6 @@ using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
-using TelegramBot_Timetable_Core.Config;
 using TelegramBot_Timetable_Core.Services;
 
 namespace TelegramBot_Timetable_Core;
@@ -22,14 +21,14 @@ public class Core
             .BuildServiceProvider(true);
 
         var spamService = serviceProvider.GetService<ISpamService>()!;
+        
+        // Bot initialization
+        var botService = serviceProvider.GetService<IBotService>()!;
 
-        //Bot init
-        var mainConfig = new Config<MainConfig>();
-        var bot = new BotClient(mainConfig.Entries.Token);
-        var updates = await bot.GetUpdatesAsync();
+        var updates = await botService.BotClient.GetUpdatesAsync();
 
         // Set slash command to bot
-        bot.SetMyCommands(
+        botService.BotClient.SetMyCommands(
             new BotCommand("start", "Запустить приложение"),
             new BotCommand("help", "Помощь"), new BotCommand("menu", "Открыть меню"));
 
@@ -39,7 +38,7 @@ public class Core
         {
             if (!updates.Any())
             {
-                updates = await bot.GetUpdatesAsync();
+                updates = await botService.BotClient.GetUpdatesAsync();
                 continue;
             }
 
@@ -63,7 +62,7 @@ public class Core
                             if (updates.Count(u => u.Message?.From!.Id == sender.Id) >= 5)
                             {
                                 spamService.AddToSpam(sender.Id);
-                                bot.SendMessage(sender.Id,
+                                botService.BotClient.SendMessage(sender.Id,
                                     "Вы были добавлены в спам лист на 2 минуты. Не переживайте, передохните, и попробуйте еще раз");
                                 continue;
                             }
@@ -79,7 +78,7 @@ public class Core
             }
 
             var offset = updates.Last().UpdateId + 1;
-            updates = await bot.GetUpdatesAsync(offset);
+            updates = await botService.BotClient.GetUpdatesAsync(offset);
         }
     }
 }
