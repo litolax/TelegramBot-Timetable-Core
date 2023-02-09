@@ -29,8 +29,8 @@ namespace TelegramBot_Timetable_Core.Services
         public void GetSettings()
         {
             var mongoConfig = new Config<MongoConfig>();
-#if !DEBUG
             this.TableDBName = mongoConfig.Entries.DbName;
+#if !DEBUG
             Settings = new()
             {
                 Server = new MongoServerAddress(mongoConfig.Entries.Host, mongoConfig.Entries.Port),
@@ -42,7 +42,6 @@ namespace TelegramBot_Timetable_Core.Services
 #endif
          
 #if DEBUG
-            this.TableDBName = "Teachers-Timetable";
             Client = new("mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false");
             Database = Client.GetDatabase(TableDBName);
 #endif
