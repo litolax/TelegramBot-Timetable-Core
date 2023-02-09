@@ -3,6 +3,7 @@ using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
+using TelegramBot_Timetable_Core.Config;
 using TelegramBot_Timetable_Core.Services;
 
 namespace TelegramBot_Timetable_Core;
@@ -17,7 +18,9 @@ public class Core
     {
         var serviceProvider = new ServiceCollection()
             .AddSingleton<ISpamService, SpamService>()
+            .AddSingleton<IBotService, BotService>()
             .AddSingleton<IMongoService, MongoService>()
+            .AddSingleton(typeof(IConfig<>), typeof(Config<>))
             .BuildServiceProvider(true);
 
         var spamService = serviceProvider.GetService<ISpamService>()!;
