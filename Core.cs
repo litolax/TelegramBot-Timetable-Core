@@ -31,9 +31,8 @@ public class Core
         var updates = await botService.BotClient.GetUpdatesAsync();
 
         // Set slash command to bot
-        botService.BotClient.SetMyCommands(
-            new BotCommand("start", "Запустить приложение"),
-            new BotCommand("help", "Помощь"), new BotCommand("menu", "Открыть меню"));
+        botService.BotClient.SetMyCommands(new BotCommand("start", "Запустить приложение"), new BotCommand("help", "Помощь"),
+            new BotCommand("menu", "Открыть меню"), new BotCommand("tos", "Пользовательское соглашение"));
 
         Console.WriteLine("Bot started!");
 
