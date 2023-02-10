@@ -2,7 +2,7 @@
 
 namespace TelegramBot_Timetable_Core.Models
 {
-    public class User
+    public class TeachersUser
     {
         public ObjectId Id { get; set; }
         public long UserId { get; set; }
@@ -12,7 +12,7 @@ namespace TelegramBot_Timetable_Core.Models
         public string? Teacher { get; set; }
         public bool Notifications { get; set; }
 
-        public User(long userId, string? username, string? firstName, string? lastName)
+        public TeachersUser(long userId, string? username, string? firstName, string? lastName)
         {
             this.UserId = userId;
             this.Username = username;

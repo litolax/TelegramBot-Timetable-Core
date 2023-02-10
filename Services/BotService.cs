@@ -4,7 +4,7 @@ using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using TelegramBot_Timetable_Core.Config;
-using User = TelegramBot_Timetable_Core.Models.User;
+using TelegramBot_Timetable_Core.Models;
 
 namespace TelegramBot_Timetable_Core.Services;
 
@@ -108,7 +108,7 @@ public class BotService : IBotService
             var (result, messageText) = ValidationAllRegexNotification(message);
             if (!result && message.Poll is null) return;
 
-            var userCollection = this._mongoService.Database.GetCollection<User>("Users");
+            var userCollection = this._mongoService.Database.GetCollection<TeachersUser>("Users");
             var users = (await userCollection.FindAsync(u => true)).ToList();
             if (users is null || users.Count <= 0) return;
             
