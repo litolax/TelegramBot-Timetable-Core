@@ -14,6 +14,8 @@ public class Core
 
     public static MessageReceiveDelegate? OnMessageReceive;
 
+    public static List<long> Administrators = new();
+
     public static async Task Start(BotCommand[] botCommands)
     {
         var serviceProvider = new ServiceCollection()
@@ -24,7 +26,11 @@ public class Core
             .BuildServiceProvider(true);
 
         var spamService = serviceProvider.GetService<ISpamService>()!;
-        
+
+        // Init admin list
+        var config = serviceProvider.GetService<IConfig<MainConfig>>()!;
+        foreach (var adminId in config.Entries.Administrators) Administrators.Add(adminId);
+
         // Bot initialization
         var botService = serviceProvider.GetService<IBotService>()!;
 
