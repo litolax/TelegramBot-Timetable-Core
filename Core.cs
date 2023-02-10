@@ -14,7 +14,7 @@ public class Core
 
     public static MessageReceiveDelegate? OnMessageReceive;
 
-    public static async Task Start()
+    public static async Task Start(BotCommand[] botCommands)
     {
         var serviceProvider = new ServiceCollection()
             .AddSingleton<ISpamService, SpamService>()
@@ -31,8 +31,7 @@ public class Core
         var updates = await botService.BotClient.GetUpdatesAsync();
 
         // Set slash command to bot
-        botService.BotClient.SetMyCommands(new BotCommand("start", "Запустить приложение"), new BotCommand("help", "Помощь"),
-            new BotCommand("menu", "Открыть меню"), new BotCommand("tos", "Пользовательское соглашение"));
+        botService.BotClient.SetMyCommands(botCommands);
 
         Console.WriteLine("Bot started!");
 
