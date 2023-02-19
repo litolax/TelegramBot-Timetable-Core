@@ -11,8 +11,10 @@ namespace TelegramBot_Timetable_Core;
 public class Core
 {
     public delegate void MessageReceiveDelegate(Message message);
+    public delegate void ChannelPostReceiveDelegate(Message message);
 
     public static MessageReceiveDelegate? OnMessageReceive;
+    public static ChannelPostReceiveDelegate? OnChannelPostReceive;
 
     public static List<long> Administrators = new();
 
@@ -56,6 +58,7 @@ public class Core
                     switch (update.Type)
                     {
                         case UpdateType.Message:
+                        {
                             if (update.Message is not { } message) continue;
 
                             if (message.Date < DateTimeOffset.UtcNow.AddMinutes(-3).ToUnixTimeSeconds())
@@ -69,13 +72,21 @@ public class Core
                             if (updates.Count(u => u.Message?.From!.Id == sender.Id) >= 5)
                             {
                                 spamService.AddToSpam(sender.Id);
-                                botService.BotClient.SendMessage(sender.Id,
-                                    "Вы были добавлены в спам лист на 2 минуты. Не переживайте, передохните, и попробуйте еще раз");
+                                botService.SendMessage(new SendMessageArgs(sender.Id,
+                                    "Вы были добавлены в спам лист на 2 минуты. Не переживайте, передохните, и попробуйте еще раз"));
                                 continue;
                             }
 
                             OnMessageReceive?.Invoke(message);
                             break;
+                        }
+                        case UpdateType.ChannelPost:
+                        {
+                            if (update.ChannelPost is not { } channelPost) continue;
+                            
+                            OnChannelPostReceive?.Invoke(channelPost);
+                            break;
+                        }
                     }
                 }
                 catch (Exception e)
