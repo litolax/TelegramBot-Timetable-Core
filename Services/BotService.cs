@@ -1,5 +1,7 @@
 ﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
+using Telegram.BotAPI.AvailableTypes;
+using Telegram.BotAPI.UpdatingMessages;
 using TelegramBot_Timetable_Core.Config;
 
 namespace TelegramBot_Timetable_Core.Services;
@@ -11,6 +13,8 @@ public interface IBotService
     Task<bool> SendMessageAsync(SendMessageArgs sendMessageArgs);
     bool SendPhoto(SendPhotoArgs sendPhotoArgs);
     Task<bool> SendPhotoAsync(SendPhotoArgs sendPhotoArgs);
+    bool EditMessageText(long chatId, int messageId, string text, string parseMode = null, MessageEntity[] entities = null);
+    Task<bool> EditMessageTextAsync(long chatId, int messageId, string text, string parseMode = null, MessageEntity[] entities = null);
 }
 
 public class BotService : IBotService
@@ -28,6 +32,34 @@ public class BotService : IBotService
         try
         {
             this.BotClient.SendMessage(sendMessageArgs);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
+    
+    public bool EditMessageText(long chatId, int messageId, string text, string parseMode = null, MessageEntity[] entities = null)
+    {
+        try
+        {
+            this.BotClient.EditMessageText(chatId, messageId, text, parseMode, entities);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
+    
+    public async Task<bool> EditMessageTextAsync(long chatId, int messageId, string text, string parseMode = null, MessageEntity[] entities = null)
+    {
+        try
+        {
+            await this.BotClient.EditMessageTextAsync(chatId, messageId, text, parseMode, entities);
             return true;
         }
         catch (Exception e)
