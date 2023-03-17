@@ -31,7 +31,8 @@ public class Core
 
         // Init admin list
         var config = serviceProvider.GetService<IConfig<MainConfig>>()!;
-        foreach (var adminId in config.Entries.Administrators) Administrators.Add(adminId);
+        if (config.Entries.Administrators is not null) 
+            foreach (var adminId in config.Entries.Administrators) Administrators.Add(adminId);
 
         // Bot initialization
         var botService = serviceProvider.GetService<IBotService>()!;
