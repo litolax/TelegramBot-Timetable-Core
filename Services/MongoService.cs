@@ -42,8 +42,8 @@ namespace TelegramBot_Timetable_Core.Services
 #endif
          
 #if DEBUG
-            Client = new("mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false");
-            Database = Client.GetDatabase(TableDBName);
+            this.Client = new("mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false");
+            this.Database = this.Client.GetDatabase(this.TableDBName);
 #endif
         }
 

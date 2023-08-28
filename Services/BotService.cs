@@ -27,7 +27,7 @@ public class BotService : IBotService
 
     public BotService(IConfig<MainConfig> config)
     {
-        BotClient = new BotClient(config.Entries.Token);
+        this.BotClient = new BotClient(config.Entries.Token);
     }
 
 
