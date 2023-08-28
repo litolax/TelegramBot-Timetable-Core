@@ -34,11 +34,11 @@ namespace TelegramBot_Timetable_Core.Services
             Settings = new()
             {
                 Server = new MongoServerAddress(mongoConfig.Entries.Host, mongoConfig.Entries.Port),
-                Credential = MongoCredential.CreateCredential(mongoConfig.Entries.DbName,
+                Credential = MongoCredential.CreateCredential(mongoConfig.Entries.AuthDb,
                     mongoConfig.Entries.AuthorizationName, mongoConfig.Entries.AuthorizationPassword)
             };
-            Client = new(Settings);
-            Database = Client.GetDatabase(TableDBName);
+            this.Client = new(Settings);
+            this.Database = this.Client.GetDatabase(this.TableDBName);
 #endif
          
 #if DEBUG
@@ -49,7 +49,7 @@ namespace TelegramBot_Timetable_Core.Services
 
         public async Task<string?> GetLastState(long chatId)
         {
-            var userStatesCollection = Database.GetCollection<UserState>("UserStates");
+            var userStatesCollection = this.Database.GetCollection<UserState>("UserStates");
             var state = (await userStatesCollection.FindAsync(s => s.ChatId == chatId)).ToList();
             if (state is null || state.Count <= 0) return null;
             return state.First().StateKey;
@@ -57,13 +57,13 @@ namespace TelegramBot_Timetable_Core.Services
 
         public void CreateState(UserState state)
         {
-            var userStatesCollection = Database.GetCollection<UserState>("UserStates");
+            var userStatesCollection = this.Database.GetCollection<UserState>("UserStates");
             userStatesCollection.InsertOne(state);
         }
         
         public void RemoveState(long chatId)
         {
-            var userStatesCollection = Database.GetCollection<UserState>("UserStates");
+            var userStatesCollection = this.Database.GetCollection<UserState>("UserStates");
             userStatesCollection.DeleteMany(s => s.ChatId == chatId);
         }
     }
