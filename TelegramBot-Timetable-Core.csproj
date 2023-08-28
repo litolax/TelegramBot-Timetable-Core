@@ -14,7 +14,7 @@
       <PackageReference Include="MongoDB.Bson" Version="2.21.0" />
       <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
       <PackageReference Include="System.Text.Json" Version="8.0.0-preview.4.23259.5" />
-      <PackageReference Include="Telegram.BotAPI" Version="6.7.2" />
+      <PackageReference Include="Telegram.BotAPI" Version="6.8.0" />
     </ItemGroup>
 
 </Project>
