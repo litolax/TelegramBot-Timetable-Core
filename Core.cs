@@ -43,6 +43,7 @@ public class Core
         botService.BotClient.SetMyCommands(botCommands);
 
         Console.WriteLine("Bot started!");
+        botService.SendAdminMessage(new SendMessageArgs(0, "Bot started!"));
 
         while (true)
         {
