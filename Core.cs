@@ -11,6 +11,7 @@ namespace TelegramBot_Timetable_Core;
 public class Core
 {
     public delegate void MessageReceiveDelegate(Message message);
+
     public delegate void ChannelPostReceiveDelegate(Message message);
 
     public static MessageReceiveDelegate? OnMessageReceive;
@@ -31,31 +32,38 @@ public class Core
 
         // Init admin list
         var config = serviceProvider.GetService<IConfig<MainConfig>>()!;
-        if (config.Entries.Administrators is not null) 
-            foreach (var adminId in config.Entries.Administrators) Administrators.Add(adminId);
+        if (config.Entries.Administrators is not null)
+            foreach (var adminId in config.Entries.Administrators)
+                Administrators.Add(adminId);
 
         // Bot initialization
         var botService = serviceProvider.GetService<IBotService>()!;
 
-        var updates = await botService.BotClient.GetUpdatesAsync();
-
-        // Set slash command to bot
-        botService.BotClient.SetMyCommands(botCommands);
+        var updates = Array.Empty<Update>();
+        try
+        {
+            // Set slash command to bot
+            botService.BotClient.SetMyCommands(botCommands);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
 
         Console.WriteLine("Bot started!");
         botService.SendAdminMessage(new SendMessageArgs(0, "Bot started!"));
-
+        
         while (true)
         {
-            if (!updates.Any())
+            try
             {
-                updates = await botService.BotClient.GetUpdatesAsync();
-                continue;
-            }
+                if (!updates.Any())
+                {
+                    updates = await botService.BotClient.GetUpdatesAsync();
+                    continue;
+                }
 
-            foreach (var update in updates)
-            {
-                try
+                foreach (var update in updates)
                 {
                     switch (update.Type)
                     {
@@ -85,20 +93,20 @@ public class Core
                         case UpdateType.ChannelPost:
                         {
                             if (update.ChannelPost is not { } channelPost) continue;
-                            
+
                             OnChannelPostReceive?.Invoke(channelPost);
                             break;
                         }
                     }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
 
-            var offset = updates.Last().UpdateId + 1;
-            updates = await botService.BotClient.GetUpdatesAsync(offset);
+                var offset = updates.Last().UpdateId + 1;
+                updates = await botService.BotClient.GetUpdatesAsync(offset);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
